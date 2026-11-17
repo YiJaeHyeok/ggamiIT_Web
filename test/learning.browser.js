@@ -1,0 +1,72 @@
+// Playwright browser_evaluate에서 localhost 또는 배포 사이트에 실행하는 회귀 검증.
+async () => {
+  const $ = selector => document.querySelector(selector);
+  const reports = [];
+  const assert = (condition, label) => { if (!condition) throw new Error(label); reports.push(label); };
+  const reveal = selector => { const lab = $(selector)?.closest('.lab'); if (lab) window.NOVALearning.selectLab(lab.id, {open:true,updateUrl:false}); };
+  const click = selector => { reveal(selector); $(selector).click(); };
+  const change = (selector, value) => {
+    reveal(selector);
+    const el = $(selector);
+    if (el.type === 'checkbox') el.checked = value; else el.value = value;
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  const waitFor = async predicate => {
+    const end = Date.now() + 8000;
+    while (!predicate()) { if (Date.now() > end) throw new Error('체험 완료 대기 시간 초과'); await new Promise(r => setTimeout(r, 40)); }
+  };
+  const labs = [...document.querySelectorAll('.lab')];
+  assert(labs.length === 50, '실험 50개 표시');
+  assert(new Set([...document.querySelectorAll('[id]')].map(el => el.id)).size === document.querySelectorAll('[id]').length, '중복 ID 없음');
+  assert(window.NOVA_SESSIONS.length === 10, '10개 세션 메타데이터 유지');
+  change('#transport-mode', 'tcp'); change('#packet-loss', true); click('#packet-send');
+  assert($('#packet-send').disabled, '패킷 전송 중 중복 조작 방지');
+  await waitFor(() => !$('#packet-send').disabled);
+  assert($('#packet-status').textContent.includes('4/4') && $('#packet-receiver').querySelector('[data-state="retried"]'), 'TCP 유실 재전송 및 순서 복원');
+  change('#transport-mode', 'udp'); click('#packet-send'); await waitFor(() => !$('#packet-send').disabled);
+  assert($('#packet-status').textContent.includes('3/4'), 'UDP 유실 후 자동 재전송 없음');
+  change('#packet-loss', false); click('#packet-send'); await waitFor(() => !$('#packet-send').disabled);
+  assert($('#packet-status').textContent.includes('4/4'), 'UDP 무유실 결과');
+  change('#firewall-target', '22'); click('#firewall-send');
+  assert($('#firewall-verdict').dataset.pass === 'false', '방화벽 SSH 기본 차단');
+  change('#port-22', true); assert($('#firewall-verdict').dataset.pass === 'true', '방화벽 규칙 변경 반영');
+  click('#firewall-reset'); assert(!$('#port-22').checked && $('#port-443').checked, '방화벽 기본값 복원');
+  click('#tls-off'); assert($('#tls-observer').textContent.includes('금요일'), 'HTTP 평문 관찰');
+  click('#tls-on'); assert(!$('#tls-observer').textContent.includes('금요일'), 'HTTPS 내용 보호 모형');
+  change('#sql-safe', false); click('#sql-preset');
+  assert($('#sql-results').children.length === 3, 'SQL 인젝션 취약 모형 3건');
+  change('#sql-safe', true);
+  assert($('#sql-results').textContent.includes('검색 결과 없음') && $('#sql-query').textContent.includes('$1'), '매개변수 바인딩으로 입력과 SQL 분리');
+  $('#sql-input').value = '<img src=x onerror=window.__labXss=true>';
+  $('#sql-input').dispatchEvent(new Event('input', { bubbles: true }));
+  assert(!$('#sql-query img') && !window.__labXss, '학습 입력을 HTML로 실행하지 않음'); click('#sql-reset');
+  change('#dropper-source', true); change('#dropper-protect', false); click('#dropper-next'); click('#dropper-next');
+  assert($('#dropper-next').disabled && $('#dropper-status').textContent.includes('실행 전 중단'), '드로퍼 실행 전 출처 확인으로 중단');
+  change('#dropper-source', false); change('#dropper-protect', true); click('#dropper-next'); click('#dropper-next'); click('#dropper-next');
+  assert($('#dropper-next').disabled && $('#dropper-status').textContent.includes('탐지'), '드로퍼 설치 단계 방어 비교');
+  change('#dropper-protect', false); for (let i = 0; i < 4; i++) click('#dropper-next');
+  assert($('#dropper-next').disabled && $('#dropper-status').textContent.startsWith('4/4'), '드로퍼 전체 흐름과 완료 후 조작 제한');
+  click('#dropper-reset'); assert(!$('#dropper-next').disabled, '드로퍼 반복 체험 초기화');
+  change('#mcp-connected', false); change('#mcp-permission', false); click('#mcp-run');
+  assert($('#mcp-status').textContent.includes('연결 없음'), 'MCP 미연결 결과');
+  change('#mcp-connected', true); click('#mcp-run'); assert($('#mcp-status').textContent.includes('권한 없음'), 'MCP 연결과 접근 권한 분리');
+  change('#mcp-permission', true); click('#mcp-run'); assert($('#mcp-log').textContent.includes('11:00'), '권한 허용 후 가상 도구 결과 활용');
+  change('#agent-skill', true); change('#agent-tool', false); click('#agent-next'); click('#agent-next');
+  assert($('#agent-next').disabled && $('#agent-log').textContent.includes('권한 없음'), '스킬이 도구 권한을 우회하지 않음');
+  change('#agent-tool', true); for (let i = 0; i < 4; i++) click('#agent-next');
+  assert($('#agent-next').disabled && $('#agent-log').textContent.includes('사람의 검토 대기'), '스킬 적용·응대 초안·검토 대기');
+  change('#agent-skill', false); for (let i = 0; i < 4; i++) click('#agent-next');
+  assert($('#agent-log').textContent.includes('별도의 응대 절차는 로드하지'), '스킬 없는 일반 흐름 비교');
+  change('#rag-enabled', true); change('#rag-question', 'hours'); click('#rag-run');
+  assert($('#rag-answer').textContent.includes('[문서 A]') && $('[data-doc="hours"]').classList.contains('is-match'), 'RAG 문서 검색과 출처 표시');
+  change('#rag-question', 'parking'); click('#rag-run'); assert($('#rag-answer').textContent.includes('정보가 없습니다'), 'RAG 근거 없는 질문에 추측 방지');
+  change('#rag-enabled', false); click('#rag-run'); assert($('#rag-status').textContent.includes('자료 제공 꺼짐'), 'RAG 자료 미제공 비교');
+  change('#prompt-malicious', true); change('#prompt-boundary', false); click('#prompt-run');
+  assert($('#prompt-output').textContent === '바나나', '프롬프트 인젝션 목표 변경 모형');
+  change('#prompt-boundary', true); click('#prompt-run'); assert($('#prompt-output').textContent.includes('1년'), '외부 문서와 지시 경계 비교');
+  assert(document.querySelector('#contact-form input[type="email"]') && document.querySelector('#contact-form textarea'), '기존 문의 폼 유지');
+  const calls = performance.getEntriesByType('resource').filter(r => /\/api\/|supabase|openai|anthropic/.test(r.name));
+  assert(calls.length === 0, '새 체험에서 외부 API·DB·실제 공격 호출 없음');
+  location.hash = 'labs';
+  return { passed: reports.length, reports };
+}

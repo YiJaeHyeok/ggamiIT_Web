@@ -1,0 +1,12 @@
+{
+  "name": "ggami-it-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "까미: 10개 세션과 50개 실습으로 배우는 IT 학습 웹사이트",
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env.local dev-server.cjs",
+    "test": "node --test test/inquiries.test.cjs test/inquiry-email.test.cjs test/systems-models.test.cjs test/ai-ops-models.test.cjs test/carousel-math.test.cjs",
+    "build": "npm test && node scripts/version-assets.cjs && node scripts/build.cjs"
+  }
+}

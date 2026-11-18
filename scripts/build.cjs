@@ -8,7 +8,8 @@ const files = [
   'index.html', 'style.css', 'labs.css', 'contact.css', 'learning-plus.css',
   'sessions.css', 'gallery-theme.css', 'app.js', 'contact.js', 'learning-plus.js',
   'lab-catalog-systems.js', 'lab-catalog-ai.js', 'session-icons.js',
-  'carousel-math.js', 'sessions.js', 'session-gallery.js', 'assets/contours.svg'
+  'carousel-math.js', 'sessions.js', 'session-gallery.js', 'assets/contours.svg',
+  'particle-model.js', 'photo-particles.js', 'photo-particles.css'
 ];
 
 for (const file of files) {

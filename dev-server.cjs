@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const handler = require('./api/inquiries');
 const root = __dirname;
+const port = Number(process.env.PORT || 4178);
 http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
   if (pathname === '/api/inquiries') return handler(req, res);
@@ -15,4 +16,4 @@ http.createServer((req, res) => {
     res.setHeader('Content-Type', file.endsWith('.css') ? 'text/css' : file.endsWith('.js') ? 'text/javascript' : 'text/html; charset=utf-8');
     res.end(data);
   });
-}).listen(4178, '127.0.0.1', () => console.log('NOVA preview: http://localhost:4178'));
+}).listen(port, '127.0.0.1', () => console.log('까미 preview: http://localhost:' + port));

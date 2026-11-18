@@ -24,6 +24,9 @@
 !/carousel-math.js
 !/sessions.js
 !/session-gallery.js
+!/particle-model.js
+!/photo-particles.js
+!/photo-particles.css
 !/vercel.json
 !/api
 /api/*
@@ -42,6 +45,7 @@
 !/test/systems-models.test.cjs
 !/test/ai-ops-models.test.cjs
 !/test/carousel-math.test.cjs
+!/test/particle-model.test.cjs
 !/test/gallery.browser.js
 !/test/learning.browser.js
 !/database

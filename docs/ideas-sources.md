@@ -36,3 +36,10 @@
 - 저장 파일: assets/ideas/countries.json. 원본의 이름·코드·대륙·표시 위치·폴리곤을 추출하고 좌표를 소수 셋째 자리로 반올림했다.
 - 177개 지도 영역. 1:110m 저해상도 자료이므로 모든 작은 섬과 미소국가가 별도 영역으로 존재하지는 않는다. 국경·지역 표시는 법적·정치적 판단을 의미하지 않는다.
 - 한국어 표시는 가능한 경우 브라우저 Intl.DisplayNames를 이용한다. 위도·경도는 원본의 표시 위치이며 행정 수도의 좌표라고 주장하지 않는다.
+
+## 2026-11-19 night globe assets
+
+- `assets/ideas/earth-night.jpg`: NASA Earth at Night / Black Marble 2016 Color, global 3600 × 1800 JPEG. Direct source https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144898/BlackMarble_2016_01deg.jpg . Catalog https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/ . Historical composite, not live imagery. Downloaded unmodified; NASA source credit is visible on the page.
+- `assets/ideas/country-info.json`: selected fields from https://raw.githubusercontent.com/restcountries/restcountries/master/src/main/resources/countriesV3.1.json , retrieved 2026-11-19. Repository https://github.com/restcountries/restcountries . 250 records; geometry selector retains Natural Earth's 177 regions. Missing matches display “자료 미제공”. Population reference years are absent in the upstream schema, so the UI explicitly says snapshot values, not current estimates.
+- REST Countries live v3.1 endpoint was checked and returns a deprecation response. No runtime dependency on that endpoint was added; the public source snapshot is hosted locally. No API key or outbound user-data request is used.
+- Ray/sphere picking and selected outline projection share the same perspective camera; node tests verify roundtrips at four zoom distances. No new npm packages were installed.

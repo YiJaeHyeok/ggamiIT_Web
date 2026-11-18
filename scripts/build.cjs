@@ -14,17 +14,21 @@ const files = [
   'assets/ideas/sc2-terran.webp', 'assets/ideas/sc2-zerg.webp', 'assets/ideas/sc2-protoss.webp',
   'assets/ideas/zephyrus-angle.png', 'assets/ideas/zephyrus-back.png',
   'assets/ideas/zephyrus-white.png', 'assets/ideas/zephyrus-white-back.png',
-  'assets/ideas/countries.json'
+  'assets/ideas/countries.json', 'assets/ideas/country-info.json', 'assets/ideas/earth-night.jpg',
+  'pixels.html', 'starcraft.html', 'zephyrus.html', 'earth.html',
+  'experience.js', 'experience.css', 'earth.css'
 ];
 
 for (const file of files) {
   if (!fs.lstatSync(path.join(root, file)).isFile()) throw new Error('정적 파일이 아닙니다: ' + file);
 }
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+for (const page of files.filter(file => file.endsWith('.html'))) {
+const html = fs.readFileSync(path.join(root, page), 'utf8');
 for (const match of html.matchAll(/(?:src|href)="([^"?#]+\.(?:js|css|svg|png))(?:\?[^\"]*)?"/g)) {
   if (!/^https?:/.test(match[1]) && !files.includes(match[1])) {
     throw new Error('공개 파일 목록에 참조 자산을 추가하세요: ' + match[1]);
   }
+}
 }
 // 삭제 대상이 프로젝트 바로 아래 public인지 확인하고 심볼릭 링크는 거부합니다.
 if (path.dirname(output) !== root || path.basename(output) !== 'public') throw new Error('잘못된 출력 경로');

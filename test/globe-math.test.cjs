@@ -26,3 +26,14 @@ test('country selection respects holes and a polygon crossing the date line', ()
   assert.equal(globe.contains(fiji,179,-15),true);
   assert.equal(globe.contains(fiji,0,-15),false);
 });
+test('perspective picking follows the same camera as the globe shader', () => {
+  assert.equal(typeof globe.pickPerspective, 'function');
+  assert.deepEqual(globe.pickPerspective(0,0,1,3.4,127,37),[127,37]);
+  assert.equal(globe.pickPerspective(1,1,2,5,0,0),null);
+  for (const distance of [1.4,2,3.4,6]) {
+    const p=globe.project(123,30,127,37),f=1/Math.tan(Math.PI/8);
+    const x=p.x*f/(distance-p.z)/1.6,y=p.y*f/(distance-p.z);
+    const hit=globe.pickPerspective(x,y,1.6,distance,127,37);
+    assert.ok(hit && Math.abs(hit[0]-123)<1e-7 && Math.abs(hit[1]-30)<1e-7);
+  }
+});

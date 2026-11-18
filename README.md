@@ -26,7 +26,7 @@ npm test
 npm run build
 ```
 
-빌드는 테스트를 실행하고, CSS/JS의 캐시 버전을 갱신한 뒤 웹 공개 파일 32개만 `public/`에 복사합니다. `public/`은 생성 결과이며 Git에는 올리지 않습니다. 문서, 테스트, Google 스크립트, SQL, 인증 파일은 웹 공개 폴더에 들어가지 않습니다.
+빌드는 테스트를 실행하고, CSS/JS의 캐시 버전을 갱신한 뒤 웹 공개 파일 41개만 `public/`에 복사합니다. `public/`은 생성 결과이며 Git에는 올리지 않습니다. 문서, 테스트, Google 스크립트, SQL, 인증 파일은 웹 공개 폴더에 들어가지 않습니다.
 
 Vercel은 루트 `api/inquiries.js`를 별도의 서버 함수로 처리합니다. `vercel.json`에 빌드 명령과 공개 폴더, 함수 설정이 있습니다.
 
@@ -70,6 +70,14 @@ Google Apps Script는 별도로 배포하는 서비스입니다. GitHub에 소�
 
 particle-model.js는 픽셀 샘플링, photo-particles.js는 캔버스와 조작 UI, photo-particles.css는 해당 영역의 스타일입니다. 기존 10개 세션·50개 실습은 유지됩니다. 다른 앱이 4178 포트를 사용한다면 PowerShell에서 $env:PORT=4179를 지정한 뒤 npm run dev로 실행할 수 있습니다.
 
-## 다른 아이디어
 
-상단 내 학습 오른쪽의 다른 아이디어 메뉴는 학습 화면과 독립된 디자인 체험 공간입니다. #ideas-pixels, #ideas-starcraft, #ideas-rog, #ideas-earth 주소로 각 탭을 직접 열 수 있습니다. 픽셀 입자 체험, StarCraft II 종족 전환, ROG Zephyrus G15 색상·앞뒤 이미지 전환, Natural Earth 데이터 기반 360도 지구본을 제공합니다. 나라 목록, 지도 클릭, 드래그, 방향키, 확대·축소와 자동 회전을 지원합니다. 사진 처리는 브라우저 내부이며 나라 데이터도 정적 파일로 제공하므로 새 유료 API가 필요하지 않습니다. 이미지와 지도 출처는 docs/ideas-sources.md를 참고하세요.
+## 다른 아이디어 · 독립 페이지
+
+`/#ideas`에서 체험을 선택하면 실제 HTML 문서로 이동합니다. 이전 해시 주소는 해당 문서로 연결됩니다.
+
+- `/pixels.html`: 로컬 사진 → 입자. 사진을 서버에 업로드하지 않습니다.
+- `/starcraft.html`: 종족 선택.
+- `/zephyrus.html`: Zephyrus G15 색상·앞뒤 모습.
+- `/earth.html`: NASA 2016 야간 영상에 원근 투영을 적용한 WebGL 지구. 드래그·스크롤·핀치·방향키·버튼으로 탐색합니다. 나라 선택은 Natural Earth 경계와 광선/구 교점을 사용합니다.
+
+국가 정보는 REST Countries 공개 소스의 2026-11-19 스냅샷으로, 인구 기준연도는 국가별로 제공되지 않습니다. 실시간 통계가 아닙니다. 출처와 버전은 `docs/ideas-sources.md`를 참고하세요. 새 npm 의존성은 없습니다.

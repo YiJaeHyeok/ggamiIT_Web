@@ -25,5 +25,13 @@
     return inside;
   }
   function contains(polygons,lon,lat){return polygons.some(rings=>inRing(rings[0],lon,lat)&&!rings.slice(1).some(ring=>inRing(ring,lon,lat)));}
-  return{project,inverse,contains,wrap};
+  function pickPerspective(x,y,aspect,distance,centerLon,centerLat){
+    if(![x,y,aspect,distance,centerLon,centerLat].every(Number.isFinite)||aspect<=0||distance<=1)return null;
+    if(Math.abs(x)+Math.abs(y)<1e-12)return[wrap(centerLon),centerLat];
+    const f=1/Math.tan(Math.PI/8),length=Math.hypot(x*aspect,y,f),dx=x*aspect/length,dy=y/length,dz=-f/length;
+    const b=distance*dz,disc=b*b-distance*distance+1;if(disc<0)return null;
+    const t=-b-Math.sqrt(disc);if(t<0)return null;
+    return inverse(t*dx,t*dy,centerLon,centerLat);
+  }
+  return{project,inverse,contains,wrap,pickPerspective};
 });

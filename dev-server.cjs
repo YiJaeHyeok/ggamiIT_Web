@@ -13,7 +13,7 @@ http.createServer((req, res) => {
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (error, data) => {
     if (error) { res.writeHead(404); return res.end(); }
-    const types={'.css':'text/css','.js':'text/javascript','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
+    const types={'.css':'text/css','.js':'text/javascript','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp'};
     res.setHeader('Content-Type', types[path.extname(file)] || 'text/html; charset=utf-8');
     res.end(data);
   });

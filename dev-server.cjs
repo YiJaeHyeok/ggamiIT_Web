@@ -13,7 +13,8 @@ http.createServer((req, res) => {
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (error, data) => {
     if (error) { res.writeHead(404); return res.end(); }
-    res.setHeader('Content-Type', file.endsWith('.css') ? 'text/css' : file.endsWith('.js') ? 'text/javascript' : 'text/html; charset=utf-8');
+    const types={'.css':'text/css','.js':'text/javascript','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
+    res.setHeader('Content-Type', types[path.extname(file)] || 'text/html; charset=utf-8');
     res.end(data);
   });
 }).listen(port, '127.0.0.1', () => console.log('까미 preview: http://localhost:' + port));

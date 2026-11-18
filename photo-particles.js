@@ -1,7 +1,7 @@
 /* Local photo → pixels → interactive particles. No upload or external API. */
 (() => {
   'use strict';
-  const panel = document.querySelector('#session-data');
+  const panel = document.querySelector('#idea-pixels');
   if (!panel || !window.GgamiParticles) return;
   const section = document.createElement('section');
   section.className = 'photo-particles'; section.id = 'photo-particles';
@@ -48,7 +48,7 @@
   let scatterAt = -Infinity, yaw = 0, pitch = 0;
   const pointer = { x: -1000, y: -1000, inside: false };
   function message(text, error = false) { status.textContent = text; status.dataset.error = String(error); }
-  function active() { return visible && !panel.hidden && !document.hidden && width > 0; }
+  function active() { return visible && !panel.hidden && !document.querySelector('#ideas').hidden && !document.hidden && width > 0; }
   function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; }
   function queue() { if (!frame && active()) frame = requestAnimationFrame(paint); }
   function measure() {
@@ -166,7 +166,7 @@
   }
   pauseButton.addEventListener('click', () => motion(!paused)); preference.addEventListener('change', event => motion(event.matches));
   $('[data-particle-reset]').addEventListener('click', () => {
-    generation++; busy = false; upload.disabled = false; section.removeAttribute('aria-busy');
+    generation++; upload.disabled = false; section.removeAttribute('aria-busy');
     raster = null; photoName = ''; input.value = ''; rebuild();
     canvas.setAttribute('aria-label', '나무 형태의 입자. 사진을 선택하면 사진의 픽셀을 입자로 표시합니다.');
     message('예제 · 입체 나무. 내 사진을 선택하면 새로운 형태가 만들어집니다.');
@@ -183,7 +183,7 @@
   visual.addEventListener('dragover', event => { event.preventDefault(); visual.classList.add('is-dragover'); });
   visual.addEventListener('dragleave', event => { if (!visual.contains(event.relatedTarget)) visual.classList.remove('is-dragover'); });
   visual.addEventListener('drop', event => { event.preventDefault(); visual.classList.remove('is-dragover'); load(event.dataTransfer.files[0]); });
-  document.addEventListener('nova:sessionchange', () => { if (panel.hidden) { pointer.inside = false; stop(); } else { measure(); queue(); } });
+  document.addEventListener('ggami:ideachange', event => { if (event.detail.active !== 'pixels') { pointer.inside = false; stop(); } else { measure(); queue(); } });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else queue(); });
   new IntersectionObserver(entries => { visible = entries[0].isIntersecting; if (visible) queue(); else stop(); }, { threshold: .05 }).observe(canvas);
   new ResizeObserver(measure).observe(canvas);

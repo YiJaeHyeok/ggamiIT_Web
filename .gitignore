@@ -59,3 +59,13 @@
 /docs/*
 !/docs/deployment.md
 !/docs/notifications-ko.md
+
+!/ideas.js
+!/ideas.css
+!/globe-math.js
+!/earth.js
+!/test/globe-math.test.cjs
+!/assets/ideas/
+!/assets/ideas/**
+!/DESIGN.md
+!/docs/ideas-sources.md

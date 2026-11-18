@@ -9,7 +9,12 @@ const files = [
   'sessions.css', 'gallery-theme.css', 'app.js', 'contact.js', 'learning-plus.js',
   'lab-catalog-systems.js', 'lab-catalog-ai.js', 'session-icons.js',
   'carousel-math.js', 'sessions.js', 'session-gallery.js', 'assets/contours.svg',
-  'particle-model.js', 'photo-particles.js', 'photo-particles.css'
+  'particle-model.js', 'photo-particles.js', 'photo-particles.css',
+  'ideas.js', 'ideas.css', 'globe-math.js', 'earth.js',
+  'assets/ideas/sc2-terran.webp', 'assets/ideas/sc2-zerg.webp', 'assets/ideas/sc2-protoss.webp',
+  'assets/ideas/zephyrus-angle.png', 'assets/ideas/zephyrus-back.png',
+  'assets/ideas/zephyrus-white.png', 'assets/ideas/zephyrus-white-back.png',
+  'assets/ideas/countries.json'
 ];
 
 for (const file of files) {

@@ -29,9 +29,10 @@ function receiver(options={}) {
 }
 
 test('saved inquiry sends signed whitelisted payload; mail failure cannot undo storage; duplicate DB result never emails unsaved content', async()=>{
-  const names=['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','INQUIRY_NOTIFICATION_URL','INQUIRY_NOTIFICATION_SECRET'];
+  const names=['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','INQUIRY_NOTIFICATION_URL','INQUIRY_NOTIFICATION_SECRET','NOVA_NOTIFICATION_SECRET'];
   const saved=Object.fromEntries(names.map(n=>[n,process.env[n]])), oldFetch=global.fetch;
-  Object.assign(process.env,{SUPABASE_URL:'https://exampleproject.supabase.co',SUPABASE_PUBLISHABLE_KEY:'test-key',INQUIRY_NOTIFICATION_URL:'https://script.google.com/macros/s/test-deployment/exec',INQUIRY_NOTIFICATION_SECRET:secret});
+  // Set both aliases: the preferred name can already exist in a Vercel build.
+  Object.assign(process.env,{SUPABASE_URL:'https://exampleproject.supabase.co',SUPABASE_PUBLISHABLE_KEY:'test-key',INQUIRY_NOTIFICATION_URL:'https://script.google.com/macros/s/test-deployment/exec',INQUIRY_NOTIFICATION_SECRET:secret,NOVA_NOTIFICATION_SECRET:secret});
   try {
     let calls=[], dbStatus=201, failMail=false;
     const google=receiver();

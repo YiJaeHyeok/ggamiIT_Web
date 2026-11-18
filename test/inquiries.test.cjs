@@ -50,9 +50,11 @@ test('accepts ggami website origins while rejecting lookalike hosts', async () =
 });
 
 test('only reports success after database acceptance, retries idempotently, keeps errors private', async () => {
-  const oldFetch = global.fetch, oldUrl = process.env.SUPABASE_URL, oldKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const oldFetch = global.fetch, oldUrl = process.env.SUPABASE_URL, oldKey = process.env.SUPABASE_PUBLISHABLE_KEY, oldNotificationUrl = process.env.INQUIRY_NOTIFICATION_URL;
   process.env.SUPABASE_URL = 'https://exampleproject.supabase.co';
   process.env.SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_test';
+  // Storage-only tests must not inherit a deployed notification endpoint.
+  delete process.env.INQUIRY_NOTIFICATION_URL;
   try {
     const body = valid();
     global.fetch = async (url, options) => {
@@ -79,5 +81,6 @@ test('only reports success after database acceptance, retries idempotently, keep
     global.fetch = oldFetch;
     if (oldUrl === undefined) delete process.env.SUPABASE_URL; else process.env.SUPABASE_URL = oldUrl;
     if (oldKey === undefined) delete process.env.SUPABASE_PUBLISHABLE_KEY; else process.env.SUPABASE_PUBLISHABLE_KEY = oldKey;
+    if (oldNotificationUrl === undefined) delete process.env.INQUIRY_NOTIFICATION_URL; else process.env.INQUIRY_NOTIFICATION_URL = oldNotificationUrl;
   }
 });

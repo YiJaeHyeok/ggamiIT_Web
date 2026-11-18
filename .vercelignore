@@ -49,5 +49,13 @@
 !/globe-math.js
 !/earth.js
 !/test/globe-math.test.cjs
-!/assets/ideas/
-!/assets/ideas/**
+!/assets/ideas
+/assets/ideas/*
+!/assets/ideas/sc2-terran.webp
+!/assets/ideas/sc2-zerg.webp
+!/assets/ideas/sc2-protoss.webp
+!/assets/ideas/zephyrus-angle.png
+!/assets/ideas/zephyrus-back.png
+!/assets/ideas/zephyrus-white.png
+!/assets/ideas/zephyrus-white-back.png
+!/assets/ideas/countries.json
